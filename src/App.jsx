@@ -1,9 +1,23 @@
-import React from 'react'
+import { useEffect, useState } from "react";
+import { getTasks, saveTasks } from "./services/taskService";
 
 const App = () => {
+  const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    setTasks(getTasks());
+  }, []);
+
+  useEffect(() => {
+    saveTasks(tasks);
+  }, [tasks]);
+
   return (
-    <div className='w-40 border-amber-100 bg-amber-950'>App</div>
-  )
+    <div>
+      <h1>Task Tracker</h1>
+      <pre>{JSON.stringify(tasks, null, 2)}</pre>
+    </div>
+  );
 }
 
 export default App
