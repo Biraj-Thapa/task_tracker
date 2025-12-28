@@ -1,6 +1,6 @@
 import TaskItem from "./TaskItem";
 
-const TaskList = ({ tasks, onDelete }) => {
+const TaskList = ({ tasks, onDelete, onToggle }) => {
   if (tasks.length === 0) {
     return <p className="text-gray-500">No tasks found.</p>;
   }
@@ -12,6 +12,7 @@ const TaskList = ({ tasks, onDelete }) => {
           key={task.id}
           task={task}
           onDelete={onDelete}
+          onToggle={onToggle}
         />
       ))}
     </div>
