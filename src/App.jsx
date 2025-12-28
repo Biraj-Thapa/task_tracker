@@ -3,10 +3,12 @@ import { getTasks, saveTasks } from "./services/taskService";
 import TaskForm from "./components/TaskForm";
 import TaskList from "./components/TaskList";
 import FilterBar from "./components/FilterBar";
+import SearchInput from "./components/ui/SearchInput";
 
 const App = () => {
   const [tasks, setTasks] = useState([]);
   const [filter, setFilter] = useState("All");
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     setTasks(getTasks());
@@ -37,8 +39,13 @@ const App = () => {
   };
 
   const filteredTasks = tasks.filter((task) => {
-    if (filter === "All") return true;
-    return task.status === filter;
+    const matchesFilter = filter === "All" || task.status === filter;
+
+    const matchesSearch = task.title
+      .toLowerCase()
+      .includes(search.toLowerCase());
+
+    return matchesFilter && matchesSearch;
   });
 
   return (
@@ -46,12 +53,22 @@ const App = () => {
       <h1 className="text-2xl font-bold mb-4">Task Tracker</h1>
 
       <TaskForm onAdd={addTask} />
+      <div className="mb-4">
+        <SearchInput
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
       <FilterBar
         tasks={filteredTasks}
         activeFilter={filter}
         onChange={setFilter}
       />
-      <TaskList tasks={filteredTasks} onDelete={deleteTask} onToggle={toggleStatus} />
+      <TaskList
+        tasks={filteredTasks}
+        onDelete={deleteTask}
+        onToggle={toggleStatus}
+      />
     </div>
   );
 };
