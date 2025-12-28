@@ -4,11 +4,14 @@ import TaskForm from "./components/TaskForm";
 import TaskList from "./components/TaskList";
 import FilterBar from "./components/FilterBar";
 import SearchInput from "./components/ui/SearchInput";
+import SortBar from "./components/SortBar";
 
 const App = () => {
   const [tasks, setTasks] = useState([]);
   const [filter, setFilter] = useState("All");
   const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState("date");
+  const [sortOrder, setSortOrder] = useState("asc");
 
   useEffect(() => {
     setTasks(getTasks());
@@ -48,6 +51,16 @@ const App = () => {
     return matchesFilter && matchesSearch;
   });
 
+  const sortedTasks = [...filteredTasks].sort((a, b) => {
+    if (sortBy === "title") {
+      if (sortOrder === "asc") return a.title.localeCompare(b.title);
+      else return b.title.localeCompare(a.title);
+    } else {
+      if (sortOrder === "asc") return a.createdAt - b.createdAt;
+      else return b.createdAt - a.createdAt;
+    }
+  });
+
   return (
     <div className="max-w-md mx-auto mt-10">
       <h1 className="text-2xl font-bold mb-4">Task Tracker</h1>
@@ -64,8 +77,16 @@ const App = () => {
         activeFilter={filter}
         onChange={setFilter}
       />
+
+      <SortBar
+        sortBy={sortBy}
+        sortOrder={sortOrder}
+        onSortByChange={setSortBy}
+        onSortOrderChange={setSortOrder}
+      />
+
       <TaskList
-        tasks={filteredTasks}
+        tasks={sortedTasks}
         onDelete={deleteTask}
         onToggle={toggleStatus}
       />
